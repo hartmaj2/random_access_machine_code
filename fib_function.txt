@@ -1,0 +1,117 @@
+0 1 2 3 4 5 6 7  8  9 
+0 1 1 2 3 5 8 13 21 34
+# fib(n):
+# if n = 0 then return 0
+# if n = 1 then return 1
+# else return fib(n-1) + fib(n-2)
+
+# working addresses:
+# [-1] -> address where I want my returned value (initially -10)
+# [-2] -> address where I put the number of my return label
+# [-3] -> address where I put the arguments for you
+# [-4] -> Aux1
+# [-5] -> Aux2
+# [-6] -> Aux3
+# [-7] -> Aux4
+# [-8] -> Aux5
+
+
+# Before calling a function: 
+# 1. write where I want the function to jump back
+# 2. write the parameter for the function
+# 3. specify all working addresses, the function can use
+# 4. goto functions head label
+# 5. pick up the returned result at first of the working addresses
+
+#CODE START
+# start of specify working addresses
+[-1] := -10  # where I want my returned value
+[-2] := -11  # which jump back label I want you to use
+[-3] := -12  # where I put your parameter
+[-4] := -13  # where I want the first subcall to return
+[-5] := -14  # where I want the second subcall to return 
+[-6] := -15
+[-7] := -16
+[-8] := -17
+# end of specify working addresses
+
+[[-2]] := 1 # this says I am gonna be using the first return path
+[[-3]] := 9 # ENTER n TO CALCULATE fib(n) (this is the parameter)
+
+goto FIBONACCI
+RETURN1:
+[1] := [-10] # copy returned value to first cell
+halt
+
+FIBONACCI:
+if [[-3]] = 0 then goto BASE0
+if [[-3]] = 1 then goto BASE1
+
+# first subfunction call ( i want her to return result to [[-4]])
+[[-5]] := 2 # tells the subfunction I want to use the 2nd return path
+[[-6]] := [[-3]] - 1 # fib(n-1)
+# switch to 1st subfunctions context
+[-1] := [-1] - 3
+[-2] := [-2] - 3
+[-3] := [-3] - 3
+[-4] := [-4] - 3
+[-5] := [-5] - 3
+[-6] := [-6] - 3
+[-7] := [-7] - 3
+[-8] := [-8] - 3
+# 1st subfunctions context set
+goto FIBONACCI
+RETURN2:
+# switch back to my workspace
+[-1] := [-1] + 3
+[-2] := [-2] + 3
+[-3] := [-3] + 3
+[-4] := [-4] + 3
+[-5] := [-5] + 3
+[-6] := [-6] + 3
+[-7] := [-7] + 3
+[-8] := [-8] + 3
+# my workspace back (the 1st subf returned its res to [[-4]] 
+
+#second subfunction call
+[[-6]] := 3 # tells the second subf I want to use the third path
+[[-7]] := [[-3]] - 2 # fib(n-2)
+# switch to 2nd subfunctions context
+[-1] := [-1] - 4
+[-2] := [-2] - 4
+[-3] := [-3] - 4
+[-4] := [-4] - 4
+[-5] := [-5] - 4
+[-6] := [-6] - 4
+[-7] := [-7] - 4
+[-8] := [-8] - 4
+# 2nd subfunctions context set
+goto FIBONACCI
+RETURN3:
+# switch back to my workspace
+[-1] := [-1] + 4
+[-2] := [-2] + 4
+[-3] := [-3] + 4
+[-4] := [-4] + 4
+[-5] := [-5] + 4
+[-6] := [-6] + 4
+[-7] := [-7] + 4
+[-8] := [-8] + 4
+# my workspace back (the 2nd subf returned its res to [[-5]] 
+[[-1]] := [[-4]] + [[-5]] # return fib(n-1) + fib(n-2)
+goto SWITCH
+
+BASE0:
+[[-1]] := 0
+goto SWITCH
+
+BASE1:
+[[-1]] := 1
+goto SWITCH
+
+
+SWITCH:
+if [[-2]] = 1 then goto RETURN1
+if [[-2]] = 2 then goto RETURN2
+if [[-2]] = 3 then goto RETURN3
+
