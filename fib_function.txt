@@ -1,15 +1,16 @@
-0 1 2 3 4 5 6 7  8  9 
-0 1 1 2 3 5 8 13 21 34
-# fib(n):
-# if n = 0 then return 0
-# if n = 1 then return 1
-# else return fib(n-1) + fib(n-2)
+# This code implements recursive computation of fibonacci numbers using functions on the RAM computation model
+# How to use: 
+# The input number N should be stored in field [1]
+# The output number will be output to the field [2]
 
-# working addresses:
-# [-1] -> address where I want my returned value (initially -10)
-# [-2] -> address where I put the number of my return label
-# [-3] -> address where I put the arguments for you
-# [-4] -> Aux1
+# 0 1 2 3 4 5 6 7  8  9   10 11
+# 0 1 1 2 3 5 8 13 21 34  55 89
+
+# fields containing functions context (something like a stack pointer):
+# [-1] -> address where I put the return value (I am the function right now :) )
+# [-2] -> address for index where I should return
+# [-3] -> address for argument passed to me
+# [-4] -> Aux1 - where I can do my work
 # [-5] -> Aux2
 # [-6] -> Aux3
 # [-7] -> Aux4
@@ -24,6 +25,8 @@
 # 5. pick up the returned result at first of the working addresses
 
 #CODE START
+# [1] := 9
+
 # start of specify working addresses
 [-1] := -10  # where I want my returned value
 [-2] := -11  # which jump back label I want you to use
@@ -36,11 +39,11 @@
 # end of specify working addresses
 
 [[-2]] := 1 # this says I am gonna be using the first return path
-[[-3]] := 9 # ENTER n TO CALCULATE fib(n) (this is the parameter)
+[[-3]] := [1] # pass the content of first cell to the functions parameter cell
 
 goto FIBONACCI
 RETURN1:
-[1] := [-10] # copy returned value to first cell
+[2] := [-10] # output computed fibonacci number into the second cell
 halt
 
 FIBONACCI:
